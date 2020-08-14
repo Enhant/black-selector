@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react';
+import styles from 'styled-components';
+import BlackMenuList from './components/BlackMenuList';
+import BlackSelect from './components/BlackSelect';
+
+const Background = styles.div`
+  background-color: black;
+`
 
 function App() {
+  const [ selectors, setSelectors ] = useState([
+      { value: '10', displayedValue: 'Десять' },
+      { value: '20', displayedValue: 'Двадцать' },
+      { value: '30', displayedValue: 'Тридцать' },
+    ]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Background>
+      { selectors.map( selector => (
+        <BlackSelect>
+          {
+            selectors.map( menuProps => <BlackMenuList value={ menuProps.value } displayedValue={ menuProps.displayedValue }/> )
+          }
+        </BlackSelect>
+      ) ) }
+    </Background>
   );
 }
 
