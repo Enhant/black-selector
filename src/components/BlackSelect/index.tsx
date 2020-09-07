@@ -27,8 +27,7 @@ function areEqualValues(a : valueType, b : valueType) : boolean {
         const ent1 : Entries = Object.entries(a);
         const ent2 : Entries = Object.entries(b);
         if (ent1.length !== ent2.length) return false;
-        // @ts-ignore
-        return ent1.every(([key, value]: Entry) => value === ent2[key]);
+        return ent1.every(([value]: Entry, index) => value === ent2[index][1]);
     }
     return false;
 }
@@ -82,7 +81,6 @@ const useStyles = createUseStyles((props : stylesProps) => ({
             }px) scale(1)`,
     },
 }));
-
 
 
 const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref) => {
@@ -171,56 +169,58 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
         return undefined;
     }, [labelId, displayNode]);
 
-    const keyboardListElemActions = (action : string, event?: React.KeyboardEvent) => {
-        const activeListElem = ownerDocument(menuRef.current).activeElement;
-        if (activeListElem.tagName === "DIV") {
-            // @ts-ignore
-            menuRef?.current?.children[0].focus();
+    const focusNextElem = (list : React.Ref<HTMLUListElement | null>, listElem: HTMLLIElement | null) : ChildNode | undefined | null => {
+        if (listElem && listElem.nextElementSibling) {
+            return listElem.nextElementSibling;
         }
-        if (activeListElem.tagName === "LI") {
-            if (action === 'down') {
-                if (activeListElem.nextSibling){
-                    activeListElem.nextSibling.focus();
-                } else {
-                    // @ts-ignore
-                    menuRef?.current?.firstChild?.focus();
-                }
-            } 
-            if (action === 'up') {
-                if (activeListElem.previousSibling){
-                    activeListElem.previousSibling.focus();
-                } else {
-                    // @ts-ignore
-                    menuRef?.current?.lastChild?.focus();
-                }
-            }
-            if (action === 'select' && !!event) {
-                    
-            }
+        if (typeof list !== 'function') {
+            return list?.current?.firstChild;
+        }
+        return;
+    }   
+
+    const focusPrevElem = (list : React.Ref<HTMLUListElement | null>, listElem: HTMLLIElement | null) : ChildNode | undefined | null => {
+        if (listElem && listElem.previousElementSibling) {
+            return listElem.previousElementSibling as HTMLLIElement;
+        }
+        if (typeof list !== 'function') {
+            return list?.current?.lastChild;
+        }
+        return;
+    }
+
+    const keyboardListElemActions = 
+    (
+        list : React.Ref<HTMLUListElement | null>, 
+        listElem : HTMLLIElement | null, 
+        focusListElemFunction : (list: React.Ref<HTMLUListElement | null> | null, listElem: HTMLLIElement | null) => ChildNode | null | undefined
+    ) => {
+        let nextFocusListElem = focusListElemFunction(list, listElem) as HTMLLIElement;
+        nextFocusListElem?.focus();
     }
 
     const handleKeyDown = (e : React.KeyboardEvent) => {
         if (!readOnly) {
+            const activeListElem = ownerDocument(menuRef).activeElement;
             const validKeys = ['', 'ArrowUp', 'ArrowDown', 'Enter', 'Escape'];
-            if (validKeys.indexOf(e.key) !== -1) {
-                e.preventDefault();
-            }
-            if (validKeys.indexOf(e.key) === 3) {
-                e.preventDefault();
-                update(true, e);
-                keyboardListElemActions('select', e)
-            }
-            if (validKeys.indexOf(e.key) === 4) {
-                e.preventDefault();
-                update(false, e);
-            }
-            if (validKeys.indexOf(e.key) === 1) {
-                e.preventDefault();
-                keyboardListElemActions('up');
-            }
-            if (validKeys.indexOf(e.key) === 2) {
-                e.preventDefault();
-                keyboardListElemActions('down');
+            switch(validKeys.indexOf(e.key)) {
+                case 3: 
+                    update(false, e);
+                    break;
+                case 4: 
+                    e.preventDefault();
+                    update(false, e);
+                    break;
+                case 1: 
+                    e.preventDefault();
+                    keyboardListElemActions(menuRef, activeListElem, focusPrevElem)
+                    break;
+                case 2:
+                    e.preventDefault();
+                    keyboardListElemActions(menuRef, activeListElem, focusNextElem)
+                    break;
+                default:
+                    break;
             }
         }
     };
@@ -229,17 +229,16 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
 
     const childrenArray = React.Children.toArray(children);
 
-    const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
-        // @ts-ignore
-        const index = childrenArray.map((child) => child!.props.value).indexOf(e.target.value);
+    const handleChange = (e : React.ChangeEvent<HTMLInputElement> | { target: { value : string } }) => {
+        console.log(e.target)
+        const index = childrenArray.map((child) => (child as React.ReactElement).props.value).indexOf(e.target.value);
 
         if (index === -1) {
             return;
         }
 
         const child = childrenArray[index];
-        // @ts-ignore
-        setValue(child.props.value);
+        setValue((child as React.ReactElement).props.value);
 
         if (onChange) {
             onChange(e.target.value);
@@ -280,13 +279,12 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
 
         const handleItemClick = (listElementChild : { props: IBlackMenuList }) => (event : React.MouseEvent) => {
             const newValue = listElementChild.props.value;
-
+            
             if (listElementChild.props.onClick) {
                 listElementChild.props.onClick(event);
             }
 
             if (value !== newValue) {
-                // @ts-ignore
                 setValue(newValue);
                 if (onChange) {
                     event.persist();
@@ -296,6 +294,27 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
 
             update(false, event);
         };
+
+        const handleItemKeyDown = (listElementChild : { props: IBlackMenuList }) => (event : React.KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                const newValue = listElementChild.props.value;
+                
+                if (listElementChild.props.onKeyDown) {
+                    listElementChild.props.onKeyDown(event);
+                }
+    
+                if (value !== newValue) {
+                    setValue(newValue);
+                    if (onChange) {
+                        event.persist();
+                        onChange(newValue);
+                    }
+                }
+    
+                update(false, event);
+            }
+        };
+
 
         return React.cloneElement(child, {
             'aria-selected': selected ? 'true' : undefined,
@@ -309,6 +328,7 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
                     child.props.onKeyUp(event);
                 }
             },
+            onKeyDown: handleItemKeyDown(child),
             role: 'option',
             selected,
             value: undefined,
@@ -327,7 +347,6 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
 
         e.preventDefault();
         if (typeof displayNode !== 'function') {
-            // @ts-ignore
             displayNode?.focus();
         }
 
@@ -353,7 +372,6 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
                 </div>
                 <div
                     className={clsx(displayClassName, classes.defaultSelectorInputStyles)}
-                    /* @ts-ignore */
                     ref={setDisplayNode}
                     role="button"
                     aria-disabled={disabled ? 'true' : undefined}
@@ -377,7 +395,7 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
                 {items}
             </Menu>
         </div>
-    );
+    );  
 });
 
 export default BlackSelect;

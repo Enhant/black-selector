@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 import clsx from 'clsx';
 import {IMenuListProps} from '../../../interfaces';
 
-const useStyles = createUseStyles<{ positionStyle: { top: number, left: number } }>(({ positionStyle }) => ({
+const useStyles = createUseStyles<{ positionStyle: { top: number, left: number } }>({
     menu: {
         backgroundColor: 'black',
         position: 'fixed',
@@ -13,7 +13,7 @@ const useStyles = createUseStyles<{ positionStyle: { top: number, left: number }
         top: ({positionStyle}) => positionStyle?.top,
         left: ({positionStyle}) => positionStyle?.left
     }
-}));
+});
 
 const MenuList = forwardRef<HTMLUListElement, IMenuListProps>((props : IMenuListProps, ref : React.Ref<HTMLUListElement>) => {
     const {

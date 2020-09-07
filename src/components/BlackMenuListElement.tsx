@@ -25,8 +25,8 @@ const BlackMenuListElement = (props : IBlackMenuList) => {
         <li 
             className={clsx(classes.menuListElement, props.listElementClassName, props.selected && classes.selectedMenuList )} 
             onClick={props.onClick}
-            onFocus={console.log}
             tabIndex={1}
+            onKeyDown={props.onKeyDown}
         >
             {props.displayedValue}
         </li>

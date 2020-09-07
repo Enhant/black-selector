@@ -9,6 +9,7 @@ export interface IBlackMenuList extends standartProp {
     value: string;
     displayedValue: string;
     onClick?: (e : React.MouseEvent) => void;
+    onKeyDown?: (e : React.KeyboardEvent) => void;
     selected?: boolean;
 }
 

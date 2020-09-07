@@ -13,11 +13,6 @@ import Popover from './Popover';
 import { IMenuProps } from '../../../interfaces';
 import setRef from '../../../utils/setRef';
 
-function getAnchorEl(anchorEl : () => HTMLDivElement) : HTMLDivElement {
-    return typeof anchorEl === 'function' ? anchorEl() : anchorEl;
-}
-
-
 const Menu = forwardRef<HTMLUListElement, IMenuProps>((props, ref) => {
     const { 
         children, 
