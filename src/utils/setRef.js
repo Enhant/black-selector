@@ -1,9 +1,9 @@
 function setRef(ref, value) {
     if (typeof ref === 'function') {
-      ref(value);
+        ref(value);
     } else if (ref) {
-      ref.current = value;
+        ref.current = value;
     }
-  }
+}
 
 export default setRef;

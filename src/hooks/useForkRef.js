@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-const setRef = function(ref, value) {
+const setRef = function (ref, value) {
     if (typeof ref === 'function') {
         ref(value);
     } else if (ref) {
@@ -8,10 +8,7 @@ const setRef = function(ref, value) {
     }
 };
 
-export default function useForkRef(
-    refA,
-    refB
-) {
+export default function useForkRef(refA, refB) {
     return useMemo(() => {
         if (refA == null && refB == null) {
             return null;
@@ -22,4 +19,3 @@ export default function useForkRef(
         };
     }, [refA, refB]);
 }
-

@@ -7,7 +7,7 @@ import BlackSelect from './components/BlackSelect';
 const useStyles = createUseStyles({
     selectStyles: {
         width: '50vw',
-        marginLeft: 20, 
+        marginLeft: 20,
     },
     listClassName: {
         width: 200,
@@ -16,11 +16,11 @@ const useStyles = createUseStyles({
         padding: '2px 20px',
         borderBottom: '1px solid white',
     },
-    "@global": {
+    '@global': {
         body: {
             margin: 0,
-        }
-    }
+        },
+    },
 });
 
 interface ISelector {
@@ -28,7 +28,7 @@ interface ISelector {
     displayedValue: string;
 }
 
-function App() {
+function App(): React.ReactElement<HTMLDivElement> {
     const classes = useStyles();
     const selectors: Array<ISelector> = [
         { value: '10', displayedValue: 'Десять' },
@@ -42,10 +42,10 @@ function App() {
 
     const handleChange = (newValue: string): void => {
         setValue(newValue);
-    }; 
+    };
     const handleChange1 = (newValue: string): void => {
         setValue1(newValue);
-    }; 
+    };
     const handleChange2 = (newValue: string): void => {
         setValue2(newValue);
     };
@@ -87,8 +87,6 @@ function App() {
                     />
                 ))}
             </BlackSelect>
-
-
 
             <BlackSelect
                 onChange={handleChange2}

@@ -9,79 +9,28 @@ import { createUseStyles } from 'react-jss';
 import { ISelectProps, IBlackMenuList } from '../../interfaces';
 import ownerDocument from '../../utils/ownerDocument';
 
-function isEmpty(displayValue : null | string | undefined ) : null | string | boolean {
+function isEmpty(displayValue: null | string | undefined): null | string | boolean {
     return displayValue == null || (typeof displayValue === 'string' && !displayValue.trim());
 }
 
-type Entry = [ string, string ];
+type Entry = [string, string];
 
-type Entries = Array<Entry>
+type Entries = Array<Entry>;
 
-type valueType = string | undefined | ((newValue: any) => void)
+type valueType = string | undefined | ((newValue: string) => void);
 
-function areEqualValues(a : valueType, b : valueType) : boolean {
+function areEqualValues(a: valueType, b: valueType): boolean {
     if (typeof a === 'string' && typeof b === 'string') {
         return a === b;
     }
     if (a && b) {
-        const ent1 : Entries = Object.entries(a);
-        const ent2 : Entries = Object.entries(b);
+        const ent1: Entries = Object.entries(a);
+        const ent2: Entries = Object.entries(b);
         if (ent1.length !== ent2.length) return false;
         return ent1.every(([value]: Entry, index) => value === ent2[index][1]);
     }
     return false;
 }
-
-interface isFilledObject {
-  value: string;
-  defaultValue?: string | undefined;
-}
-
-function isFilled(obj : isFilledObject, SSR = false) {
-    function hasValue(value : string | undefined) {
-        return value != null && !(Array.isArray(value) && value.length === 0);
-    }
-
-    return (
-        obj &&
-        ((hasValue(obj.value) && obj.value !== '') || (SSR && hasValue(obj.defaultValue) && obj.defaultValue !== ''))
-    );
-}
-
-interface stylesProps {
-  width: string;
-  height: string;
-  border: string;
-  padding: number;
-  labelColor: string;
-  paddingTop: string;
-}
-
-const useStyles = createUseStyles((props : stylesProps) => ({
-    input: {
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-        opacity: 0,
-        pointerEvents: 'none',
-    },
-    defaultSelectorInputStyles: {
-        width: () => props.width || 'calc(100% - 10px)',
-        minWidth: 120,
-        height: () => props.height || 19,
-        border: () => props.border || `1px solid #c1c1c1`,
-        padding: () => props.padding || '5px 0 5px 5px',
-        tabIndex: '0',
-    },
-    defaultLabel: {
-        color: () => props.labelColor || '#c1c1c1',
-        transform: () =>
-            `translate(${5}px, ${
-                props.height + (props.paddingTop ? props.paddingTop : Number.isInteger(props.padding) ? props.padding / 2 : 0) || 21.5
-            }px) scale(1)`,
-    },
-}));
-
 
 const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref) => {
     const {
@@ -98,17 +47,14 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
         children,
         onOpen,
         onClose,
-        displayEmpty,
         openSelect: openProp,
         label,
         listClassName,
         labelColor,
-        sizeProps,
-        displayClassName
+        displayClassName,
     } = props;
 
     const classes = useStyles({
-        ...sizeProps,
         labelColor: labelColor,
     });
     const inputRef = useRef(null);
@@ -116,13 +62,12 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
     const [openState, setOpenState] = useState(false);
     const handleRef = useForkRef(ref, inputRefProp);
     const { current: isOpenControlled } = useRef(openProp != null);
-    const menuRef = useRef<HTMLUListElement | null>(null)
+    const menuRef = useRef<HTMLUListElement | null>(null);
 
     const [value, setValue] = useControlled({
         controlled: valueProp,
-        default: defaultValue
+        default: defaultValue,
     });
-
 
     const createHandle = () => ({
         focus: () => {
@@ -131,14 +76,10 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
             }
         },
         node: inputRef.current,
-        value : value,
-    })
+        value: value,
+    });
 
-    useImperativeHandle(
-        handleRef,
-        createHandle,
-        [displayNode, value],
-    );
+    useImperativeHandle(handleRef, createHandle, [displayNode, value]);
 
     useEffect(() => {
         if (autoFocus && displayNode) {
@@ -169,7 +110,10 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
         return undefined;
     }, [labelId, displayNode]);
 
-    const focusNextElem = (list : React.Ref<HTMLUListElement | null>, listElem: HTMLLIElement | null) : ChildNode | undefined | null => {
+    const focusNextElem = (
+        list: React.Ref<HTMLUListElement | null>,
+        listElem: HTMLLIElement | null,
+    ): ChildNode | undefined | null => {
         if (listElem && listElem.nextElementSibling) {
             return listElem.nextElementSibling;
         }
@@ -177,9 +121,12 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
             return list?.current?.firstChild;
         }
         return;
-    }   
+    };
 
-    const focusPrevElem = (list : React.Ref<HTMLUListElement | null>, listElem: HTMLLIElement | null) : ChildNode | undefined | null => {
+    const focusPrevElem = (
+        list: React.Ref<HTMLUListElement | null>,
+        listElem: HTMLLIElement | null,
+    ): ChildNode | undefined | null => {
         if (listElem && listElem.previousElementSibling) {
             return listElem.previousElementSibling as HTMLLIElement;
         }
@@ -187,37 +134,39 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
             return list?.current?.lastChild;
         }
         return;
-    }
+    };
 
-    const keyboardListElemActions = 
-    (
-        list : React.Ref<HTMLUListElement | null>, 
-        listElem : HTMLLIElement | null, 
-        focusListElemFunction : (list: React.Ref<HTMLUListElement | null> | null, listElem: HTMLLIElement | null) => ChildNode | null | undefined
+    const keyboardListElemActions = (
+        list: React.Ref<HTMLUListElement | null>,
+        listElem: HTMLLIElement | null,
+        focusListElemFunction: (
+            list: React.Ref<HTMLUListElement | null> | null,
+            listElem: HTMLLIElement | null,
+        ) => ChildNode | null | undefined,
     ) => {
-        let nextFocusListElem = focusListElemFunction(list, listElem) as HTMLLIElement;
+        const nextFocusListElem = focusListElemFunction(list, listElem) as HTMLLIElement;
         nextFocusListElem?.focus();
-    }
+    };
 
-    const handleKeyDown = (e : React.KeyboardEvent) => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
         if (!readOnly) {
             const activeListElem = ownerDocument(menuRef).activeElement;
             const validKeys = ['', 'ArrowUp', 'ArrowDown', 'Enter', 'Escape'];
-            switch(validKeys.indexOf(e.key)) {
-                case 3: 
+            switch (validKeys.indexOf(e.key)) {
+                case 3:
                     update(false, e);
                     break;
-                case 4: 
+                case 4:
                     e.preventDefault();
                     update(false, e);
                     break;
-                case 1: 
+                case 1:
                     e.preventDefault();
-                    keyboardListElemActions(menuRef, activeListElem, focusPrevElem)
+                    keyboardListElemActions(menuRef, activeListElem, focusPrevElem);
                     break;
                 case 2:
                     e.preventDefault();
-                    keyboardListElemActions(menuRef, activeListElem, focusNextElem)
+                    keyboardListElemActions(menuRef, activeListElem, focusNextElem);
                     break;
                 default:
                     break;
@@ -229,8 +178,8 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
 
     const childrenArray = React.Children.toArray(children);
 
-    const handleChange = (e : React.ChangeEvent<HTMLInputElement> | { target: { value : string } }) => {
-        console.log(e.target)
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }) => {
+        console.log(e.target);
         const index = childrenArray.map((child) => (child as React.ReactElement).props.value).indexOf(e.target.value);
 
         if (index === -1) {
@@ -245,14 +194,13 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
         }
     };
 
-    const update = (openSelect : boolean, event : React.MouseEvent | React.KeyboardEvent) => {
+    const update = (openSelect: boolean, event: React.MouseEvent | React.KeyboardEvent) => {
         if (openSelect) {
             if (onOpen) {
                 onOpen(event);
             }
             // @ts-ignore
             document.body.style = 'overflow: hidden';
-
         } else {
             // @ts-ignore
             document.body.style = 'overflow: auto';
@@ -277,9 +225,9 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
             display = child.props.value;
         }
 
-        const handleItemClick = (listElementChild : { props: IBlackMenuList }) => (event : React.MouseEvent) => {
+        const handleItemClick = (listElementChild: { props: IBlackMenuList }) => (event: React.MouseEvent) => {
             const newValue = listElementChild.props.value;
-            
+
             if (listElementChild.props.onClick) {
                 listElementChild.props.onClick(event);
             }
@@ -295,14 +243,14 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
             update(false, event);
         };
 
-        const handleItemKeyDown = (listElementChild : { props: IBlackMenuList }) => (event : React.KeyboardEvent) => {
+        const handleItemKeyDown = (listElementChild: { props: IBlackMenuList }) => (event: React.KeyboardEvent) => {
             if (event.key === 'Enter') {
                 const newValue = listElementChild.props.value;
-                
+
                 if (listElementChild.props.onKeyDown) {
                     listElementChild.props.onKeyDown(event);
                 }
-    
+
                 if (value !== newValue) {
                     setValue(newValue);
                     if (onChange) {
@@ -310,16 +258,15 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
                         onChange(newValue);
                     }
                 }
-    
+
                 update(false, event);
             }
         };
 
-
         return React.cloneElement(child, {
             'aria-selected': selected ? 'true' : undefined,
             onClick: handleItemClick(child),
-            onKeyUp: (event : React.KeyboardEvent) => {
+            onKeyUp: (event: React.KeyboardEvent) => {
                 if (event.key === ' ') {
                     event.preventDefault();
                 }
@@ -336,11 +283,11 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
         });
     });
 
-    const handleClose = (event : React.KeyboardEvent | React.MouseEvent) => {
+    const handleClose = (event: React.KeyboardEvent | React.MouseEvent) => {
         update(false, event);
     };
 
-    const handleMouseDown = (e : React.MouseEvent) => {
+    const handleMouseDown = (e: React.MouseEvent) => {
         if (e.button !== 0) {
             return;
         }
@@ -352,8 +299,6 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
 
         update(true, e);
     };
-
-
 
     return (
         <div className={props.className}>
@@ -395,7 +340,46 @@ const BlackSelect = React.forwardRef<HTMLUListElement, ISelectProps>((props, ref
                 {items}
             </Menu>
         </div>
-    );  
+    );
 });
+
+interface stylesProps {
+    width: string;
+    height: string;
+    border: string;
+    padding: number;
+    labelColor: string;
+    paddingTop: string;
+}
+
+const useStyles = createUseStyles((props: stylesProps) => ({
+    input: {
+        bottom: 0,
+        left: 0,
+        position: 'absolute',
+        opacity: 0,
+        pointerEvents: 'none',
+    },
+    defaultSelectorInputStyles: {
+        width: () => props.width || 'calc(100% - 10px)',
+        minWidth: 120,
+        height: () => props.height || 19,
+        border: () => props.border || `1px solid #c1c1c1`,
+        padding: () => props.padding || '5px 0 5px 5px',
+        tabIndex: '0',
+        '&:focus': {
+            borderColor: 'red',
+        },
+    },
+    defaultLabel: {
+        color: () => props.labelColor || '#c1c1c1',
+        transform: () =>
+            `translate(${5}px, ${
+                props.height +
+                    (props.paddingTop ? props.paddingTop : Number.isInteger(props.padding) ? props.padding / 2 : 0) ||
+                21.5
+            }px) scale(1)`,
+    },
+}));
 
 export default BlackSelect;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import { IPopover } from '../../../interfaces'
+import { IPopover } from '../../../interfaces';
 
 const useStyles = createUseStyles({
     popover: {
@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
     },
 });
 
-const Popover = React.forwardRef((props : IPopover, ref : React.Ref<HTMLDivElement>) => {
+const Popover = React.forwardRef((props: IPopover, ref: React.Ref<HTMLDivElement>) => {
     const classes = useStyles();
     return (
         <div className={classes.popover} ref={ref} onClick={props.onClose} role="popover">

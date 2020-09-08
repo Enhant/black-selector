@@ -9,21 +9,25 @@ const useStyles = createUseStyles({
         color: 'white',
         listStyle: 'none',
         cursor: 'pointer',
-        "&:focus, &:hover": {
+        '&:focus, &:hover': {
             background: 'gray',
-        }
+        },
     },
     selectedMenuList: {
         color: 'black',
-        background: 'white'
+        background: 'white',
     },
 });
 
-const BlackMenuListElement = (props : IBlackMenuList) => {
+const BlackMenuListElement = (props: IBlackMenuList): React.ReactElement<HTMLLIElement> => {
     const classes = useStyles();
     return (
-        <li 
-            className={clsx(classes.menuListElement, props.listElementClassName, props.selected && classes.selectedMenuList )} 
+        <li
+            className={clsx(
+                classes.menuListElement,
+                props.listElementClassName,
+                props.selected && classes.selectedMenuList,
+            )}
             onClick={props.onClick}
             tabIndex={1}
             onKeyDown={props.onKeyDown}
