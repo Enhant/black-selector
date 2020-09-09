@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.js": "//enhant.github.io/black-selector/static/js/main.20541cc3.chunk.js",
-    "main.js.map": "//enhant.github.io/black-selector/static/js/main.20541cc3.chunk.js.map",
-    "runtime-main.js": "//enhant.github.io/black-selector/static/js/runtime-main.10771266.js",
-    "runtime-main.js.map": "//enhant.github.io/black-selector/static/js/runtime-main.10771266.js.map",
-    "static/js/2.cd032eb3.chunk.js": "//enhant.github.io/black-selector/static/js/2.cd032eb3.chunk.js",
-    "static/js/2.cd032eb3.chunk.js.map": "//enhant.github.io/black-selector/static/js/2.cd032eb3.chunk.js.map",
-    "index.html": "//enhant.github.io/black-selector/index.html",
-    "precache-manifest.de62fc67b30e653bebd4b687cce648ca.js": "//enhant.github.io/black-selector/precache-manifest.de62fc67b30e653bebd4b687cce648ca.js",
-    "service-worker.js": "//enhant.github.io/black-selector/service-worker.js",
-    "static/js/2.cd032eb3.chunk.js.LICENSE.txt": "//enhant.github.io/black-selector/static/js/2.cd032eb3.chunk.js.LICENSE.txt"
+    "main.js": "/black-selector/static/js/main.20541cc3.chunk.js",
+    "main.js.map": "/black-selector/static/js/main.20541cc3.chunk.js.map",
+    "runtime-main.js": "/black-selector/static/js/runtime-main.8917cff1.js",
+    "runtime-main.js.map": "/black-selector/static/js/runtime-main.8917cff1.js.map",
+    "static/js/2.cd032eb3.chunk.js": "/black-selector/static/js/2.cd032eb3.chunk.js",
+    "static/js/2.cd032eb3.chunk.js.map": "/black-selector/static/js/2.cd032eb3.chunk.js.map",
+    "index.html": "/black-selector/index.html",
+    "precache-manifest.9bbaff4b95cca7b8c0cf59e27d3c9f37.js": "/black-selector/precache-manifest.9bbaff4b95cca7b8c0cf59e27d3c9f37.js",
+    "service-worker.js": "/black-selector/service-worker.js",
+    "static/js/2.cd032eb3.chunk.js.LICENSE.txt": "/black-selector/static/js/2.cd032eb3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.10771266.js",
+    "static/js/runtime-main.8917cff1.js",
     "static/js/2.cd032eb3.chunk.js",
     "static/js/main.20541cc3.chunk.js"
   ]
