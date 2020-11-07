@@ -26,14 +26,15 @@ const useStyles = createUseStyles({
 interface ISelector {
     value: string;
     displayedValue: string;
+    id: number;
 }
 
 function App(): React.ReactElement<HTMLDivElement> {
     const classes = useStyles();
     const selectors: Array<ISelector> = [
-        { value: '10', displayedValue: 'Десять' },
-        { value: '20', displayedValue: 'Двадцать' },
-        { value: '30', displayedValue: 'Тридцать' },
+        { value: '10', displayedValue: 'Десять', id: 0 },
+        { value: '20', displayedValue: 'Двадцать', id: 1 },
+        { value: '30', displayedValue: 'Тридцать', id: 2 },
     ];
 
     const [value, setValue] = useState('');
@@ -65,7 +66,7 @@ function App(): React.ReactElement<HTMLDivElement> {
                         listElementClassName={classes.listElementClassName}
                         value={menuProps.value}
                         displayedValue={menuProps.displayedValue}
-                        key={menuProps.value}
+                        key={menuProps.id}
                     />
                 ))}
             </BlackSelect>
@@ -83,7 +84,7 @@ function App(): React.ReactElement<HTMLDivElement> {
                         listElementClassName={classes.listElementClassName}
                         value={menuProps.value}
                         displayedValue={menuProps.displayedValue}
-                        key={menuProps.value}
+                        key={menuProps.id}
                     />
                 ))}
             </BlackSelect>
@@ -101,7 +102,7 @@ function App(): React.ReactElement<HTMLDivElement> {
                         listElementClassName={classes.listElementClassName}
                         value={menuProps.value}
                         displayedValue={menuProps.displayedValue}
-                        key={menuProps.value}
+                        key={menuProps.id}
                     />
                 ))}
             </BlackSelect>
